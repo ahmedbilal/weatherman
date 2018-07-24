@@ -7,6 +7,7 @@ def shortToLongDate(arg):
     month = date[1]
     months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
     month = months[int(month) - 1]
+    print(year, month)
     return (year, month)
 
 class WeathermanEntries:
@@ -159,9 +160,8 @@ class WeathermanEntries:
                 max_temp = d.get('Max TemperatureC')
                 min_temp = d.get('Min TemperatureC')
                 if max_temp != '': 
-                    print("%10s" % d.get("PKT"), sty.fg.red, "+" * int(max_temp), sty.fg.rs)
-                if min_temp != '':
-                    print("%10s" % d.get("PKT"), sty.fg.blue, "+" * int(min_temp), sty.fg.rs)
+                    pkt = d.get("PKT") or d.get("PKST")
+                    print("%10s" % pkt,  sty.fg.blue, "+" * int(min_temp) + sty.fg.rs + sty.fg.red + "+" * int(max_temp), sty.fg.rs, min_temp + "C - " + max_temp + "C")
 wmentries = WeathermanEntries()
     
 
