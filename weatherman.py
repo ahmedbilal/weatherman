@@ -1,5 +1,5 @@
-import os
-import sys
+import os, sys
+import sty
 
 def shortToLongDate(arg):
     date = arg.split("/")
@@ -146,6 +146,22 @@ class WeathermanEntries:
         else:
             return None
 
+
+    def draw_chart_for_month(self, by = None):
+        found = False
+        date = shortToLongDate(by)
+        year = date[0]
+        month = date[1]
+        for e in wmentries.entries.keys():
+            if by is not None and (year not in e or month not in e):
+                continue
+            for d in wmentries.entries[e]:
+                max_temp = d.get('Max TemperatureC')
+                min_temp = d.get('Min TemperatureC')
+                if max_temp != '': 
+                    print("%10s" % d.get("PKT"), sty.fg.red, "+" * int(max_temp), sty.fg.rs)
+                if min_temp != '':
+                    print("%10s" % d.get("PKT"), sty.fg.blue, "+" * int(min_temp), sty.fg.rs)
 wmentries = WeathermanEntries()
     
 
@@ -171,6 +187,8 @@ def read_file(file):
     meta = f.readline().strip("\n").replace(", ", ",").split(",")
     entries = []
     for line in f.readlines():
+        if "<!--" in line:
+            continue
         l = line.strip("\n").split(",")
         entries.append(read_to_weatherman_entry(meta, l))
     wmentries.set_entries(file, entries)
@@ -201,5 +219,7 @@ def main():
         print("Highest Average:", highest_avg_temp)
         print("Lowest Average:", lowest_avg_temp)
         print("Average Mean Humidity:", avg_mean_humid)
-
+    elif mode == '-c':
+        date = sys.argv[3]
+        wmentries.draw_chart_for_month(date)
 main()
