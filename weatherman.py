@@ -7,7 +7,6 @@ def shortToLongDate(arg):
     month = date[1]
     months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
     month = months[int(month) - 1]
-    print(year, month)
     return (year, month)
 
 class WeathermanEntries:
@@ -149,7 +148,6 @@ class WeathermanEntries:
 
 
     def draw_chart_for_month(self, by = None):
-        found = False
         date = shortToLongDate(by)
         year = date[0]
         month = date[1]
@@ -162,6 +160,8 @@ class WeathermanEntries:
                 if max_temp != '': 
                     pkt = d.get("PKT") or d.get("PKST")
                     print("%10s" % pkt,  sty.fg.blue, "+" * int(min_temp) + sty.fg.rs + sty.fg.red + "+" * int(max_temp), sty.fg.rs, min_temp + "C - " + max_temp + "C")
+
+
 wmentries = WeathermanEntries()
     
 
@@ -193,33 +193,53 @@ def read_file(file):
         entries.append(read_to_weatherman_entry(meta, l))
     wmentries.set_entries(file, entries)
 
+def part_one(year):
+    highest_temp = wmentries.highest_temp(year)
+    lowest_temp = wmentries.lowest_temp(year)
+    most_humid = wmentries.most_humid(year)
+    print("Highest:", highest_temp[0], "on", highest_temp[1])
+    print("Lowest:", lowest_temp[0], "on", lowest_temp[1])
+    print("Humidity:", most_humid[0], "on", most_humid[1])
+
+
+def part_two(date):
+    highest_avg_temp = wmentries.highest_avg_temp(date)
+    lowest_avg_temp = wmentries.lowest_avg_temp(date)
+    avg_mean_humid = wmentries.avg_mean_humid(date)
+    print("Highest Average:", highest_avg_temp)
+    print("Lowest Average:", lowest_avg_temp)
+    print("Average Mean Humidity:", avg_mean_humid)
+
+def part_three(date):
+    wmentries.draw_chart_for_month(date)
 
 def main():
     path = sys.argv[1]
     mode = sys.argv[2]
+
+    if len(sys.argv) % 2 != 0:
+        print("Not Enough args")
+        return False
 
     weatherdata = os.listdir(path)
     
     for file in weatherdata:
         read_file(os.path.join(path, file))
 
-    if mode == '-e':
-        year = sys.argv[3]
-        highest_temp = wmentries.highest_temp(year)
-        lowest_temp = wmentries.lowest_temp(year)
-        most_humid = wmentries.most_humid(year)
-        print("Highest:", highest_temp[0], "on", highest_temp[1])
-        print("Lowest:", lowest_temp[0], "on", lowest_temp[1])
-        print("Humidity:", most_humid[0], "on", most_humid[1])
-    elif mode == '-a':
-        date = sys.argv[3]
-        highest_avg_temp = wmentries.highest_avg_temp(date)
-        lowest_avg_temp = wmentries.lowest_avg_temp(date)
-        avg_mean_humid = wmentries.avg_mean_humid(date)
-        print("Highest Average:", highest_avg_temp)
-        print("Lowest Average:", lowest_avg_temp)
-        print("Average Mean Humidity:", avg_mean_humid)
-    elif mode == '-c':
-        date = sys.argv[3]
-        wmentries.draw_chart_for_month(date)
+    for i in range(2, len(sys.argv) - 1, 2):
+        mode = sys.argv[i]
+        if mode == '-e':
+            year = sys.argv[i + 1]
+            part_one(year)
+            print()
+
+        elif mode == '-a':
+            date = sys.argv[i + 1]
+            part_two(date)
+            print()
+
+        elif mode == '-c':
+            date = sys.argv[i + 1]
+            part_three(date)
+            print()
 main()
