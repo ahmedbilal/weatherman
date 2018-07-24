@@ -1,1 +1,3 @@
 testScript.py
+*.json
+__pycache__/
