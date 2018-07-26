@@ -1,16 +1,15 @@
 import os
 import sys
 import sty
+import datetime
 
 
 def short_to_long_date(arg):
     """ Takes date (as str) in "Year/Month" format
         and returns date (as tuple) in (year, month_abbrivation_in_3_letters)
      """
-    months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-
     date = arg.split("/")
-    year, month = date[0], months[int(date[1]) - 1]
+    year, month = date[0], datetime.date(int(date[0]), int(date[1]), 1).strftime('%B')[:3]
     return year, month
 
 
